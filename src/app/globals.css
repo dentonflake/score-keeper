@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+:root {
+  --dark-900: #0b0b0e;
+  --dark-800: #131319;
+  --dark-700: #1b1b23;
+  --text-100: #f5f5f7;
+  --text-200: #c8c8d2;
+  --accent-red: #b23a2f;
+  --accent-red-dark: #8f2d25;
+}
+
+@theme inline {
+  --color-background: var(--dark-900);
+  --color-foreground: var(--text-100);
+  --font-sans: var(--font-space-grotesk);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+body {
+  background: var(--dark-900);
+  color: var(--text-100);
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, sans-serif;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-position: 0 0, 18px 18px;
+  background-size: 36px 36px;
+}
