@@ -116,7 +116,7 @@ export default function NewGamePage() {
           <div className="flex flex-wrap gap-3">
             <Link
               href="/"
-              className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold uppercase tracking-wide text-white shadow-md shadow-black/40 transition hover:bg-white/15"
+              className="rounded-md bg-white/10 px-4 py-2 text-sm font-semibold uppercase tracking-wide text-white shadow-md shadow-black/40 transition hover:bg-white/15"
             >
               Home
             </Link>
@@ -125,7 +125,7 @@ export default function NewGamePage() {
       </header>
 
       <main className="mx-auto w-full max-w-3xl px-6 py-10">
-        <div className="rounded-[2.5rem]  bg-[var(--dark-800)]/90 p-8 shadow-2xl shadow-black/50">
+        <div className="rounded-lg  bg-[var(--dark-800)]/90 p-8 shadow-2xl shadow-black/50">
           <h2 className="text-2xl font-semibold text-white">Start a New Game</h2>
           <p className="mt-2 text-sm text-[var(--text-200)]">
             Add players, give your game a name, and start tracking rounds.
@@ -137,7 +137,7 @@ export default function NewGamePage() {
                 value={newGameName}
                 onChange={(event) => setNewGameName(event.target.value)}
                 placeholder="Friday Night Showdown"
-                className="h-11 w-full rounded-2xl  bg-[var(--dark-900)] px-3 text-base text-white shadow-inner shadow-black/40 focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/50"
+                className="h-11 w-full rounded-lg  bg-[var(--dark-900)] px-3 text-base text-white shadow-inner shadow-black/40 focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/50"
               />
             </label>
 
@@ -155,7 +155,7 @@ export default function NewGamePage() {
                       )
                     }
                     placeholder={`Player ${index + 1}`}
-                    className="h-11 w-full rounded-2xl  bg-[var(--dark-900)] px-3 text-base text-white shadow-inner shadow-black/40 focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/50"
+                    className="h-11 w-full rounded-lg  bg-[var(--dark-900)] px-3 text-base text-white shadow-inner shadow-black/40 focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/50"
                   />
                   {newPlayers.length > 1 && (
                     <button
@@ -168,7 +168,7 @@ export default function NewGamePage() {
                 </div>
               ))}
               <button
-                className="w-fit rounded-full bg-white/10 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-md shadow-black/40 transition hover:bg-white/20"
+                className="w-fit rounded-md bg-white/10 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-md shadow-black/40 transition hover:bg-white/20"
                 onClick={() => setNewPlayers((prev) => [...prev, ""])}
               >
                 Add player
@@ -179,7 +179,7 @@ export default function NewGamePage() {
             </div>
 
             <button
-              className="mt-2 w-full rounded-full  bg-[var(--accent-red)] py-3 text-sm font-semibold uppercase tracking-wide text-white shadow-lg shadow-[var(--accent-red)]/40 transition hover:bg-[var(--accent-red-dark)]"
+              className="mt-2 w-full rounded-md  bg-[var(--accent-red)] py-3 text-sm font-semibold uppercase tracking-wide text-white shadow-lg shadow-[var(--accent-red)]/40 transition hover:bg-[var(--accent-red-dark)]"
               onClick={createGame}
             >
               Start game
