@@ -25,6 +25,7 @@ type Game = {
   name: string;
   createdAt: string;
   endedAt: string | null;
+  scoring: "high" | "low";
   players: Player[];
   rounds: Round[];
 };
@@ -66,8 +67,12 @@ const getTotals = (game: Game | null) => {
 const getWinners = (game: Game) => {
   if (!game.endedAt) return [] as Player[];
   const totals = getTotals(game);
-  const maxScore = Math.max(...Object.values(totals), 0);
-  return game.players.filter((player) => totals[player.id] === maxScore);
+  const scoreValues = Object.values(totals);
+  if (scoreValues.length === 0) return [] as Player[];
+  const scoring = game.scoring ?? "high";
+  const targetScore =
+    scoring === "low" ? Math.min(...scoreValues) : Math.max(...scoreValues);
+  return game.players.filter((player) => totals[player.id] === targetScore);
 };
 
 export default function Home() {
@@ -77,9 +82,11 @@ export default function Home() {
 
   const [playerToAdd, setPlayerToAdd] = useState("");
   const [roundDeltas, setRoundDeltas] = useState<Record<string, string>>({});
+  const [roundSigns, setRoundSigns] = useState<Record<string, 1 | -1>>({});
   const [roundError, setRoundError] = useState("");
   const [editingRoundId, setEditingRoundId] = useState<string | null>(null);
   const [editEntries, setEditEntries] = useState<Record<string, string>>({});
+  const [editSigns, setEditSigns] = useState<Record<string, 1 | -1>>({});
 
   useEffect(() => {
     try {
@@ -108,23 +115,31 @@ export default function Home() {
     }
   }, [games, activeGameId, isLoaded]);
 
-  const activeGame = useMemo(
-    () => games.find((game) => game.id === activeGameId) ?? null,
-    [games, activeGameId]
-  );
+  const activeGame = useMemo(() => {
+    const found = games.find((game) => game.id === activeGameId) ?? null;
+    if (!found) return null;
+    return {
+      ...found,
+      scoring: found.scoring ?? "high",
+    };
+  }, [games, activeGameId]);
 
   const totals = useMemo(() => getTotals(activeGame), [activeGame]);
 
   useEffect(() => {
     if (!activeGame) {
       setRoundDeltas({});
+      setRoundSigns({});
       return;
     }
     const next: Record<string, string> = {};
+    const nextSigns: Record<string, 1 | -1> = {};
     activeGame.players.forEach((player) => {
       next[player.id] = "";
+      nextSigns[player.id] = 1;
     });
     setRoundDeltas(next);
+    setRoundSigns(nextSigns);
   }, [activeGame?.id, activeGame?.players.length]);
 
   const updateGame = (gameId: string, updater: (game: Game) => Game) => {
@@ -152,7 +167,9 @@ export default function Home() {
     const entries = activeGame.players
       .map((player) => ({
         playerId: player.id,
-        delta: Number(roundDeltas[player.id] ?? 0),
+        delta:
+          (roundSigns[player.id] ?? 1) *
+          Number(roundDeltas[player.id] ? Math.abs(Number(roundDeltas[player.id])) : 0),
       }))
       .filter((entry) => !Number.isNaN(entry.delta) && entry.delta !== 0);
 
@@ -179,18 +196,28 @@ export default function Home() {
       });
       return next;
     });
+    setRoundSigns((prev) => {
+      const next: Record<string, 1 | -1> = {};
+      Object.keys(prev).forEach((key) => {
+        next[key] = 1;
+      });
+      return next;
+    });
     setRoundError("");
   };
 
   const startEditRound = (round: Round) => {
     if (!activeGame || activeGame.endedAt) return;
     const next: Record<string, string> = {};
+    const nextSigns: Record<string, 1 | -1> = {};
     activeGame.players.forEach((player) => {
       const entry = round.entries.find((item) => item.playerId === player.id);
-      next[player.id] = entry ? String(entry.delta) : "";
+      next[player.id] = entry ? String(Math.abs(entry.delta)) : "";
+      nextSigns[player.id] = entry && entry.delta < 0 ? -1 : 1;
     });
     setEditingRoundId(round.id);
     setEditEntries(next);
+    setEditSigns(nextSigns);
   };
 
   const saveEditRound = () => {
@@ -198,7 +225,9 @@ export default function Home() {
     const updatedEntries = activeGame.players
       .map((player) => ({
         playerId: player.id,
-        delta: Number(editEntries[player.id] ?? 0),
+        delta:
+          (editSigns[player.id] ?? 1) *
+          Number(editEntries[player.id] ? Math.abs(Number(editEntries[player.id])) : 0),
       }))
       .filter((entry) => !Number.isNaN(entry.delta) && entry.delta !== 0);
 
@@ -211,6 +240,7 @@ export default function Home() {
 
     setEditingRoundId(null);
     setEditEntries({});
+    setEditSigns({});
   };
 
   const deleteRound = (roundId: string) => {
@@ -221,6 +251,7 @@ export default function Home() {
     }));
     setEditingRoundId(null);
     setEditEntries({});
+    setEditSigns({});
   };
 
   const deleteGame = (gameId: string) => {
@@ -240,6 +271,7 @@ export default function Home() {
     }));
     setEditingRoundId(null);
     setEditEntries({});
+    setEditSigns({});
   };
 
   const goHome = () => {
@@ -261,7 +293,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      <header className="bg-[var(--dark-900)]/80 backdrop-blur">
+      <header className="bg-[var(--dark-900)]/80 backdrop-blur animate-fade-in">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-6">
           <Link href="/" className="group" onClick={goHome}>
             <div>
@@ -277,12 +309,12 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl px-6 py-8">
+      <main className="mx-auto w-full max-w-6xl px-6 py-8 animate-fade-in">
         <section className="space-y-8">
           {!activeGame && (
             <>
-              <div className="relative overflow-hidden rounded-lg  bg-[var(--dark-800)]/80 px-8 pb-8 pt-8">
-                <div className="absolute -right-20 -top-24 h-64 w-64 rounded-full bg-[var(--accent-red)]/20 blur-3xl" />
+              <div className="relative overflow-hidden rounded-lg  bg-[var(--dark-800)]/80 px-8 pb-8 pt-8 animate-fade-up">
+                <div className="absolute -right-20 -top-24 h-64 w-64 rounded-full bg-[var(--accent-red)]/20 blur-3xl animate-float" />
                 <div className="relative grid gap-6 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:items-start">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--accent-red)]">
@@ -314,7 +346,7 @@ export default function Home() {
 
           {activeGame && (
             <div className="space-y-6">
-              <div className="rounded-xl  bg-[var(--dark-800)]/90 p-6">
+              <div className="rounded-xl  bg-[var(--dark-800)]/90 p-6 animate-fade-up">
                 <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-red)]">
@@ -348,10 +380,11 @@ export default function Home() {
                 </div>
 
                 <div className="mt-6 grid gap-4 md:grid-cols-2">
-                  {activeGame.players.map((player) => (
+                  {activeGame.players.map((player, index) => (
                     <div
                       key={player.id}
-                      className="flex items-center justify-between rounded-lg  bg-[var(--dark-900)]/90 px-4 py-3 text-sm font-semibold"
+                      className="flex items-center justify-between rounded-lg  bg-[var(--dark-900)]/90 px-4 py-3 text-sm font-semibold animate-fade-up"
+                      style={{ animationDelay: `${index * 60}ms` }}
                     >
                       <span className="uppercase tracking-wide text-[var(--text-200)]">
                         {player.name}
@@ -364,7 +397,7 @@ export default function Home() {
                 </div>
 
                 {activeGame.endedAt && (
-                  <div className="mt-6 rounded-lg  bg-[var(--accent-red)] px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white">
+                  <div className="mt-6 rounded-lg  bg-[var(--accent-red)] px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white animate-fade-up">
                     Winner{getWinners(activeGame).length > 1 ? "s" : ""}: {" "}
                     {getWinners(activeGame)
                       .map((player) => player.name)
@@ -374,30 +407,72 @@ export default function Home() {
               </div>
 
               {!activeGame.endedAt && (
-                <div className="rounded-xl  bg-[var(--dark-800)]/90 p-6">
+                <div className="rounded-xl  bg-[var(--dark-800)]/90 p-6 animate-fade-up">
                   <h3 className="text-xl font-semibold text-[var(--text-100)]">Add Round</h3>
                   <p className="mt-1 text-sm text-[var(--text-200)]">
                     Enter point changes for any player. Negative values subtract points.
                   </p>
                   <div className="mt-4 grid gap-3">
                     {activeGame.players.map((player) => (
-                      <label key={player.id} className="flex items-center gap-3">
-                        <span className="w-24 text-sm font-semibold uppercase tracking-wide text-[var(--text-200)]">
+                      <label
+                        key={player.id}
+                        className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3"
+                      >
+                        <span className="w-full text-sm font-semibold uppercase tracking-wide text-[var(--text-200)] sm:w-24">
                           {player.name}
                         </span>
-                        <input
-                          type="number"
-                          inputMode="numeric"
-                          value={roundDeltas[player.id] ?? ""}
-                          onChange={(event) =>
-                            setRoundDeltas((prev) => ({
-                              ...prev,
-                              [player.id]: event.target.value,
-                            }))
-                          }
-                          placeholder="0"
-                          className="h-11 w-full rounded-lg  bg-[var(--dark-900)] px-3 text-base text-[var(--text-100)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/50"
-                        />
+                        <div className="flex w-full items-center gap-2">
+                          <div className="flex h-11 shrink-0 overflow-hidden rounded-lg border border-[var(--dark-700)] bg-[var(--dark-900)]">
+                            <button
+                              type="button"
+                              aria-pressed={(roundSigns[player.id] ?? 1) === 1}
+                              className={`grid h-full place-items-center px-4 text-2xl font-semibold uppercase leading-none tracking-wide ${
+                                (roundSigns[player.id] ?? 1) === 1
+                                  ? "bg-[var(--surface-1)] text-[var(--text-100)]"
+                                  : "text-[var(--text-200)]"
+                              }`}
+                              onClick={() =>
+                                setRoundSigns((prev) => ({
+                                  ...prev,
+                                  [player.id]: 1,
+                                }))
+                              }
+                            >
+                              <span className="leading-none">+</span>
+                            </button>
+                            <button
+                              type="button"
+                              aria-pressed={(roundSigns[player.id] ?? 1) === -1}
+                              className={`grid h-full place-items-center px-4 text-2xl font-semibold uppercase leading-none tracking-wide ${
+                                (roundSigns[player.id] ?? 1) === -1
+                                  ? "bg-[var(--accent-red)] text-white"
+                                  : "text-[var(--text-200)]"
+                              }`}
+                              onClick={() =>
+                                setRoundSigns((prev) => ({
+                                  ...prev,
+                                  [player.id]: -1,
+                                }))
+                              }
+                            >
+                              <span className="inline-block -translate-y-[1px] leading-none">-</span>
+                            </button>
+                          </div>
+                          <input
+                            type="number"
+                            inputMode="numeric"
+                            min={0}
+                            value={roundDeltas[player.id] ?? ""}
+                            onChange={(event) =>
+                              setRoundDeltas((prev) => ({
+                                ...prev,
+                                [player.id]: event.target.value,
+                              }))
+                            }
+                            placeholder="0"
+                            className="h-11 min-w-0 w-full rounded-lg  bg-[var(--dark-900)] px-3 text-base text-[var(--text-100)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/50"
+                          />
+                        </div>
                       </label>
                     ))}
                   </div>
@@ -431,7 +506,7 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="rounded-xl  bg-[var(--dark-800)]/90 p-6">
+              <div className="rounded-xl  bg-[var(--dark-800)]/90 p-6 animate-fade-up">
                 <h3 className="text-xl font-semibold text-[var(--text-100)]">Rounds</h3>
                 {activeGame.rounds.length === 0 ? (
                   <p className="mt-3 text-sm text-[var(--text-200)]">
@@ -442,7 +517,8 @@ export default function Home() {
                     {activeGame.rounds.map((round, index) => (
                       <div
                         key={round.id}
-                        className="rounded-lg  bg-[var(--dark-900)]/80 p-4"
+                        className="rounded-lg  bg-[var(--dark-900)]/80 p-4 animate-fade-up"
+                        style={{ animationDelay: `${index * 70}ms` }}
                       >
                         <div className="flex flex-wrap items-center justify-between gap-3">
                           <div>
@@ -474,23 +550,65 @@ export default function Home() {
                         {editingRoundId === round.id && !activeGame.endedAt ? (
                           <div className="mt-4 grid gap-3">
                             {activeGame.players.map((player) => (
-                              <label key={player.id} className="flex items-center gap-3">
-                                <span className="w-24 text-sm font-semibold uppercase tracking-wide text-[var(--text-200)]">
+                              <label
+                                key={player.id}
+                                className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3"
+                              >
+                                <span className="w-full text-sm font-semibold uppercase tracking-wide text-[var(--text-200)] sm:w-24">
                                   {player.name}
                                 </span>
-                                <input
-                                  type="number"
-                                  inputMode="numeric"
-                                  value={editEntries[player.id] ?? ""}
-                                  onChange={(event) =>
-                                    setEditEntries((prev) => ({
-                                      ...prev,
-                                      [player.id]: event.target.value,
-                                    }))
-                                  }
-                                  placeholder="0"
-                                  className="h-10 w-full rounded-lg  bg-[var(--dark-900)] px-3 text-base text-[var(--text-100)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/50"
-                                />
+                                <div className="flex w-full items-center gap-2">
+                                  <div className="flex h-10 shrink-0 overflow-hidden rounded-lg border border-[var(--dark-700)] bg-[var(--dark-900)]">
+                                    <button
+                                      type="button"
+                                      aria-pressed={(editSigns[player.id] ?? 1) === 1}
+                                      className={`grid h-full place-items-center px-4 text-2xl font-semibold uppercase leading-none tracking-wide ${
+                                        (editSigns[player.id] ?? 1) === 1
+                                          ? "bg-[var(--surface-1)] text-[var(--text-100)]"
+                                          : "text-[var(--text-200)]"
+                                      }`}
+                                      onClick={() =>
+                                        setEditSigns((prev) => ({
+                                          ...prev,
+                                          [player.id]: 1,
+                                        }))
+                                      }
+                                    >
+                                      <span className="leading-none">+</span>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      aria-pressed={(editSigns[player.id] ?? 1) === -1}
+                                      className={`grid h-full place-items-center px-4 text-2xl font-semibold uppercase leading-none tracking-wide ${
+                                        (editSigns[player.id] ?? 1) === -1
+                                          ? "bg-[var(--accent-red)] text-white"
+                                          : "text-[var(--text-200)]"
+                                      }`}
+                                      onClick={() =>
+                                        setEditSigns((prev) => ({
+                                          ...prev,
+                                          [player.id]: -1,
+                                        }))
+                                      }
+                                    >
+                                      <span className="inline-block -translate-y-[1px] leading-none">-</span>
+                                    </button>
+                                  </div>
+                                  <input
+                                    type="number"
+                                    inputMode="numeric"
+                                    min={0}
+                                    value={editEntries[player.id] ?? ""}
+                                    onChange={(event) =>
+                                      setEditEntries((prev) => ({
+                                        ...prev,
+                                        [player.id]: event.target.value,
+                                      }))
+                                    }
+                                    placeholder="0"
+                                    className="h-10 min-w-0 w-full rounded-lg  bg-[var(--dark-900)] px-3 text-base text-[var(--text-100)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/50"
+                                  />
+                                </div>
                               </label>
                             ))}
                             <div className="flex flex-wrap gap-2">
@@ -546,7 +664,7 @@ export default function Home() {
           )}
           {!activeGame && (
             <div className="grid gap-6 lg:grid-cols-2">
-              <div className="rounded-xl  bg-[var(--dark-800)]/90 p-5">
+              <div className="rounded-xl  bg-[var(--dark-800)]/90 p-5 animate-fade-up">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="text-lg font-semibold text-[var(--text-100)]">Win History</h3>
                   <Link
@@ -562,12 +680,13 @@ export default function Home() {
                   </p>
                 ) : (
                   <div className="mt-3 grid gap-4">
-                    {recentCompleted.map((game) => {
+                    {recentCompleted.map((game, index) => {
                       const winners = getWinners(game);
                       return (
                         <div
                           key={game.id}
-                          className="rounded-lg  bg-[var(--dark-900)]/80 px-3 py-3 text-sm"
+                          className="rounded-lg  bg-[var(--dark-900)]/80 px-3 py-3 text-sm animate-fade-up"
+                          style={{ animationDelay: `${index * 70}ms` }}
                         >
                           <p className="font-semibold uppercase tracking-wide text-[var(--text-100)]">
                             {game.name}
@@ -600,7 +719,7 @@ export default function Home() {
                 )}
               </div>
 
-              <div className="rounded-xl  bg-[var(--dark-800)]/90 p-5">
+              <div className="rounded-xl  bg-[var(--dark-800)]/90 p-5 animate-fade-up">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="text-lg font-semibold text-[var(--text-100)]">In Progress</h3>
                   <Link
@@ -614,10 +733,11 @@ export default function Home() {
                   <p className="mt-3 text-sm text-[var(--text-200)]">No active games yet.</p>
                 ) : (
                   <div className="mt-3 grid gap-3">
-                    {recentInProgress.map((game) => (
+                    {recentInProgress.map((game, index) => (
                       <div
                         key={game.id}
-                        className="rounded-lg  bg-[var(--dark-900)]/80 px-3 py-3 text-sm"
+                        className="rounded-lg  bg-[var(--dark-900)]/80 px-3 py-3 text-sm animate-fade-up"
+                        style={{ animationDelay: `${index * 70}ms` }}
                       >
                         <button
                           className="w-full text-left font-semibold uppercase tracking-wide text-[var(--text-100)]"

@@ -26,6 +26,7 @@ type Game = {
   name: string;
   createdAt: string;
   endedAt: string | null;
+  scoring: "high" | "low";
   players: Player[];
   rounds: Round[];
 };
@@ -47,6 +48,7 @@ export default function NewGamePage() {
   const [newGameName, setNewGameName] = useState("");
   const [newPlayers, setNewPlayers] = useState<string[]>([""]);
   const [newGameError, setNewGameError] = useState("");
+  const [scoringRule, setScoringRule] = useState<"high" | "low">("high");
   const playerInputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const prevPlayerCount = useRef(newPlayers.length);
 
@@ -109,6 +111,7 @@ export default function NewGamePage() {
       name: newGameName.trim() || `Game ${games.length + 1}`,
       createdAt: new Date().toISOString(),
       endedAt: null,
+      scoring: scoringRule,
       players: trimmedNames.map((name) => ({ id: makeId(), name })),
       rounds: [],
     };
@@ -122,7 +125,7 @@ export default function NewGamePage() {
 
   return (
     <div className="min-h-screen">
-      <header className="bg-[var(--dark-900)]/80 backdrop-blur">
+      <header className="bg-[var(--dark-900)]/80 backdrop-blur animate-fade-in">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-6">
           <Link
             href="/"
@@ -142,8 +145,8 @@ export default function NewGamePage() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-3xl px-6 py-10">
-        <div className="rounded-lg  bg-[var(--dark-800)]/90 p-8">
+      <main className="mx-auto w-full max-w-3xl px-6 py-10 animate-fade-in">
+        <div className="rounded-lg  bg-[var(--dark-800)]/90 p-8 animate-fade-up">
           <h2 className="text-2xl font-semibold text-[var(--text-100)]">Start a New Game</h2>
           <p className="mt-2 text-sm text-[var(--text-200)]">
             Add players, give your game a name, and start tracking rounds.
@@ -165,10 +168,44 @@ export default function NewGamePage() {
               />
             </label>
 
+            <div className="grid gap-2 text-sm font-semibold uppercase tracking-wide text-[var(--text-200)]">
+              Scoring rule
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  aria-pressed={scoringRule === "high"}
+                  className={`rounded-md px-4 py-2 text-xs font-semibold uppercase tracking-wide transition ${
+                    scoringRule === "high"
+                      ? "bg-[var(--accent-red)] text-white"
+                      : "bg-[var(--surface-1)] text-[var(--text-100)] hover:bg-[var(--surface-1-hover)]"
+                  }`}
+                  onClick={() => setScoringRule("high")}
+                >
+                  Highest score wins
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={scoringRule === "low"}
+                  className={`rounded-md px-4 py-2 text-xs font-semibold uppercase tracking-wide transition ${
+                    scoringRule === "low"
+                      ? "bg-[var(--accent-red)] text-white"
+                      : "bg-[var(--surface-1)] text-[var(--text-100)] hover:bg-[var(--surface-1-hover)]"
+                  }`}
+                  onClick={() => setScoringRule("low")}
+                >
+                  Lowest score wins
+                </button>
+              </div>
+            </div>
+
             <div className="grid gap-3">
               <p className="text-sm font-semibold uppercase tracking-wide text-[var(--text-200)]">Players</p>
               {newPlayers.map((player, index) => (
-                <div key={`player-${index}`} className="flex gap-2">
+                <div
+                  key={`player-${index}`}
+                  className="flex gap-2 animate-fade-up"
+                  style={{ animationDelay: `${index * 60}ms` }}
+                >
                   <input
                     ref={(element) => {
                       playerInputRefs.current[index] = element;

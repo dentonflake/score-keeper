@@ -26,6 +26,7 @@ type Game = {
   name: string;
   createdAt: string;
   endedAt: string | null;
+  scoring: "high" | "low";
   players: Player[];
   rounds: Round[];
 };
@@ -58,8 +59,12 @@ const getTotals = (game: Game) => {
 
 const getWinners = (game: Game) => {
   const totals = getTotals(game);
-  const maxScore = Math.max(...Object.values(totals), 0);
-  return game.players.filter((player) => totals[player.id] === maxScore);
+  const scoreValues = Object.values(totals);
+  if (scoreValues.length === 0) return [] as Player[];
+  const scoring = game.scoring ?? "high";
+  const targetScore =
+    scoring === "low" ? Math.min(...scoreValues) : Math.max(...scoreValues);
+  return game.players.filter((player) => totals[player.id] === targetScore);
 };
 
 export default function HistoryPage() {
@@ -98,7 +103,7 @@ export default function HistoryPage() {
 
   return (
     <div className="min-h-screen">
-      <header className="bg-[var(--dark-900)]/80 backdrop-blur">
+      <header className="bg-[var(--dark-900)]/80 backdrop-blur animate-fade-in">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-6">
           <Link
             href="/"
@@ -118,18 +123,19 @@ export default function HistoryPage() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl px-6 py-10">
-        <div className="rounded-xl  bg-[var(--dark-800)]/90 p-6">
+      <main className="mx-auto w-full max-w-6xl px-6 py-10 animate-fade-in">
+        <div className="rounded-xl  bg-[var(--dark-800)]/90 p-6 animate-fade-up">
           {completedGames.length === 0 ? (
             <p className="text-sm text-[var(--text-200)]">No completed games yet.</p>
           ) : (
             <div className="grid gap-4 md:grid-cols-2">
-              {completedGames.map((game) => {
+              {completedGames.map((game, index) => {
                 const winners = getWinners(game);
                 return (
                   <div
                     key={game.id}
-                    className="rounded-lg  bg-[var(--dark-900)]/80 px-4 py-4 text-sm"
+                    className="rounded-lg  bg-[var(--dark-900)]/80 px-4 py-4 text-sm animate-fade-up"
+                    style={{ animationDelay: `${index * 70}ms` }}
                   >
                     <p className="font-semibold uppercase tracking-wide text-[var(--text-100)]">
                       {game.name}
