@@ -146,7 +146,7 @@ export default function NewGamePage() {
       </header>
 
       <main className="mx-auto w-full max-w-3xl px-6 py-10 animate-fade-in">
-        <div className="rounded-lg  bg-[var(--dark-800)]/90 p-8 animate-fade-up">
+        <div className="rounded-lg card-surface bg-[var(--dark-800)]/90 p-8 animate-fade-up">
           <h2 className="text-2xl font-semibold text-[var(--text-100)]">Start a New Game</h2>
           <p className="mt-2 text-sm text-[var(--text-200)]">
             Add players, give your game a name, and start tracking rounds.

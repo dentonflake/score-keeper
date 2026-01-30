@@ -105,7 +105,7 @@ export default function InProgressPage() {
       </header>
 
       <main className="mx-auto w-full max-w-6xl px-6 py-10 animate-fade-in">
-        <div className="rounded-xl  bg-[var(--dark-800)]/90 p-6 animate-fade-up">
+        <div className="rounded-xl card-surface bg-[var(--dark-800)]/90 p-6 animate-fade-up">
           {inProgressGames.length === 0 ? (
             <p className="text-sm text-[var(--text-200)]">No active games yet.</p>
           ) : (
@@ -113,7 +113,7 @@ export default function InProgressPage() {
               {inProgressGames.map((game, index) => (
                 <div
                   key={game.id}
-                  className="rounded-lg  bg-[var(--dark-900)]/80 px-4 py-4 text-sm animate-fade-up"
+                  className="rounded-lg card-inset bg-[var(--dark-900)]/80 px-4 py-4 text-sm animate-fade-up"
                   style={{ animationDelay: `${index * 70}ms` }}
                 >
                   <p className="font-semibold uppercase tracking-wide text-[var(--text-100)]">

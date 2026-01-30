@@ -313,7 +313,7 @@ export default function Home() {
         <section className="space-y-8">
           {!activeGame && (
             <>
-              <div className="relative overflow-hidden rounded-lg  bg-[var(--dark-800)]/80 px-8 pb-8 pt-8 animate-fade-up">
+              <div className="relative overflow-hidden rounded-lg card-surface bg-[var(--dark-800)]/80 px-8 pb-8 pt-8 animate-fade-up">
                 <div className="absolute -right-20 -top-24 h-64 w-64 rounded-full bg-[var(--accent-red)]/20 blur-3xl animate-float" />
                 <div className="relative grid gap-6 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:items-start">
                   <div>
@@ -346,7 +346,7 @@ export default function Home() {
 
           {activeGame && (
             <div className="space-y-6">
-              <div className="rounded-xl  bg-[var(--dark-800)]/90 p-6 animate-fade-up">
+              <div className="rounded-xl card-surface bg-[var(--dark-800)]/90 p-6 animate-fade-up">
                 <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-red)]">
@@ -383,7 +383,7 @@ export default function Home() {
                   {activeGame.players.map((player, index) => (
                     <div
                       key={player.id}
-                      className="flex items-center justify-between rounded-lg  bg-[var(--dark-900)]/90 px-4 py-3 text-sm font-semibold animate-fade-up"
+                      className="flex items-center justify-between rounded-lg card-inset bg-[var(--dark-900)]/90 px-4 py-3 text-sm font-semibold animate-fade-up"
                       style={{ animationDelay: `${index * 60}ms` }}
                     >
                       <span className="uppercase tracking-wide text-[var(--text-200)]">
@@ -397,7 +397,7 @@ export default function Home() {
                 </div>
 
                 {activeGame.endedAt && (
-                  <div className="mt-6 rounded-lg  bg-[var(--accent-red)] px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white animate-fade-up">
+                  <div className="mt-6 rounded-lg card-inset bg-[var(--accent-red)] px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white animate-fade-up">
                     Winner{getWinners(activeGame).length > 1 ? "s" : ""}: {" "}
                     {getWinners(activeGame)
                       .map((player) => player.name)
@@ -407,7 +407,7 @@ export default function Home() {
               </div>
 
               {!activeGame.endedAt && (
-                <div className="rounded-xl  bg-[var(--dark-800)]/90 p-6 animate-fade-up">
+                <div className="rounded-xl card-surface bg-[var(--dark-800)]/90 p-6 animate-fade-up">
                   <h3 className="text-xl font-semibold text-[var(--text-100)]">Add Round</h3>
                   <p className="mt-1 text-sm text-[var(--text-200)]">
                     Enter point changes for any player. Negative values subtract points.
@@ -506,7 +506,7 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="rounded-xl  bg-[var(--dark-800)]/90 p-6 animate-fade-up">
+              <div className="rounded-xl card-surface bg-[var(--dark-800)]/90 p-6 animate-fade-up">
                 <h3 className="text-xl font-semibold text-[var(--text-100)]">Rounds</h3>
                 {activeGame.rounds.length === 0 ? (
                   <p className="mt-3 text-sm text-[var(--text-200)]">
@@ -517,7 +517,7 @@ export default function Home() {
                     {activeGame.rounds.map((round, index) => (
                       <div
                         key={round.id}
-                        className="rounded-lg  bg-[var(--dark-900)]/80 p-4 animate-fade-up"
+                        className="rounded-lg card-inset bg-[var(--dark-900)]/80 p-4 animate-fade-up"
                         style={{ animationDelay: `${index * 70}ms` }}
                       >
                         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -664,7 +664,7 @@ export default function Home() {
           )}
           {!activeGame && (
             <div className="grid gap-6 lg:grid-cols-2">
-              <div className="rounded-xl  bg-[var(--dark-800)]/90 p-5 animate-fade-up">
+              <div className="rounded-xl card-surface bg-[var(--dark-800)]/90 p-5 animate-fade-up">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="text-lg font-semibold text-[var(--text-100)]">Win History</h3>
                   <Link
@@ -685,7 +685,7 @@ export default function Home() {
                       return (
                         <div
                           key={game.id}
-                          className="rounded-lg  bg-[var(--dark-900)]/80 px-3 py-3 text-sm animate-fade-up"
+                          className="rounded-lg card-inset bg-[var(--dark-900)]/80 px-3 py-3 text-sm animate-fade-up"
                           style={{ animationDelay: `${index * 70}ms` }}
                         >
                           <p className="font-semibold uppercase tracking-wide text-[var(--text-100)]">
@@ -719,7 +719,7 @@ export default function Home() {
                 )}
               </div>
 
-              <div className="rounded-xl  bg-[var(--dark-800)]/90 p-5 animate-fade-up">
+              <div className="rounded-xl card-surface bg-[var(--dark-800)]/90 p-5 animate-fade-up">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="text-lg font-semibold text-[var(--text-100)]">In Progress</h3>
                   <Link
@@ -736,7 +736,7 @@ export default function Home() {
                     {recentInProgress.map((game, index) => (
                       <div
                         key={game.id}
-                        className="rounded-lg  bg-[var(--dark-900)]/80 px-3 py-3 text-sm animate-fade-up"
+                        className="rounded-lg card-inset bg-[var(--dark-900)]/80 px-3 py-3 text-sm animate-fade-up"
                         style={{ animationDelay: `${index * 70}ms` }}
                       >
                         <button

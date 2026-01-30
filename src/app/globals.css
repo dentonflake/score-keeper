@@ -14,11 +14,20 @@
   --surface-1-hover: rgba(255, 255, 255, 0.16);
   --surface-2: rgba(255, 255, 255, 0.06);
   --surface-2-hover: rgba(255, 255, 255, 0.12);
+  --bg-noise-strong: rgba(255, 255, 255, 0.1);
+  --bg-noise-soft: rgba(255, 255, 255, 0.05);
+  --bg-scanline: rgba(255, 255, 255, 0.055);
+  --bg-vignette: rgba(0, 0, 0, 0.35);
+  --bg-red-glow: rgba(227, 66, 52, 0.18);
+  --card-border: rgba(255, 255, 255, 0.14);
+  --card-border-soft: rgba(255, 255, 255, 0.08);
+  --card-shadow: 0 26px 60px -38px rgba(0, 0, 0, 0.7);
+  --card-shadow-soft: 0 16px 30px -22px rgba(0, 0, 0, 0.6);
 }
 
 [data-theme="light"] {
   --dark-900: #f6f3ee;
-  --dark-800: #efe9e1;
+  --dark-800: #ffffff;
   --dark-700: #e4dcd0;
   --text-100: #1b1a18;
   --text-200: #5b5449;
@@ -30,6 +39,15 @@
   --surface-1-hover: rgba(27, 26, 24, 0.16);
   --surface-2: rgba(27, 26, 24, 0.06);
   --surface-2-hover: rgba(27, 26, 24, 0.12);
+  --bg-noise-strong: rgba(52, 40, 28, 0.22);
+  --bg-noise-soft: rgba(52, 40, 28, 0.12);
+  --bg-scanline: rgba(52, 40, 28, 0.06);
+  --bg-vignette: rgba(74, 54, 32, 0.18);
+  --bg-red-glow: rgba(200, 59, 44, 0.22);
+  --card-border: rgba(126, 92, 66, 0.4);
+  --card-border-soft: rgba(126, 92, 66, 0.26);
+  --card-shadow: 0 22px 50px -34px rgba(122, 78, 54, 0.55);
+  --card-shadow-soft: 0 14px 26px -20px rgba(122, 78, 54, 0.4);
 }
 
 @theme inline {
@@ -41,8 +59,30 @@
 
 body {
   background: var(--dark-900);
+  background-image:
+    radial-gradient(circle at 18% 12%, var(--bg-red-glow) 0, transparent 55%),
+    radial-gradient(circle at 50% 30%, transparent 40%, var(--bg-vignette) 100%),
+    radial-gradient(1px 1px at 12px 18px, var(--bg-noise-strong) 0, transparent 60%),
+    radial-gradient(1px 1px at 28px 6px, var(--bg-noise-soft) 0, transparent 60%),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 2px,
+      var(--bg-scanline) 3px
+    );
+  background-size: 100% 100%, 100% 100%, 30px 30px, 36px 36px, 100% 5px;
   color: var(--text-100);
   font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, sans-serif;
+}
+
+.card-surface {
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+}
+
+.card-inset {
+  border: 1px solid var(--card-border-soft);
+  box-shadow: var(--card-shadow-soft);
 }
 
 @keyframes fade-up {
