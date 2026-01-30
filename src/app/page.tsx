@@ -333,7 +333,7 @@ export default function Home() {
                     <div className="mt-6 flex flex-wrap gap-3">
                       <Link
                         href="/new"
-                        className="inline-flex items-center justify-center rounded-md bg-[var(--accent-red)] px-6 py-3 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-[var(--accent-red-dark)]"
+                        className="btn inline-flex items-center justify-center rounded-md bg-[var(--accent-red)] px-6 py-3 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-[var(--accent-red-dark)]"
                       >
                         Start a new game
                       </Link>
@@ -365,12 +365,12 @@ export default function Home() {
                     )}
                   </div>
                   <div className="flex w-full flex-wrap items-center justify-between gap-3 md:w-auto">
-                    <div className="rounded-md  bg-[var(--dark-900)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)]">
+                    <div className="flex h-11 items-center rounded-md bg-[var(--dark-900)] px-4 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)]">
                       {activeGame.rounds.length} rounds
                     </div>
                     {!activeGame.endedAt && (
                       <button
-                        className="rounded-md bg-[var(--accent-red)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-[var(--accent-red-dark)]"
+                        className="btn rounded-md bg-[var(--accent-red)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-[var(--accent-red-dark)]"
                         onClick={endGame}
                       >
                         End game
@@ -470,7 +470,7 @@ export default function Home() {
                               }))
                             }
                             placeholder="0"
-                            className="h-11 min-w-0 w-full rounded-lg  bg-[var(--dark-900)] px-3 text-base text-[var(--text-100)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/50"
+                            className="input-field min-w-0"
                           />
                         </div>
                       </label>
@@ -483,7 +483,7 @@ export default function Home() {
                   )}
                   <div className="mt-5 flex flex-wrap gap-3">
                     <button
-                      className="w-full rounded-md bg-[var(--accent-red)] px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-[var(--accent-red-dark)] md:ml-auto md:w-auto md:px-5 md:py-2"
+                      className="btn w-full rounded-md bg-[var(--accent-red)] px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-[var(--accent-red-dark)] md:ml-auto md:w-auto md:px-5 md:py-2"
                       onClick={addRound}
                     >
                       Save round
@@ -494,10 +494,10 @@ export default function Home() {
                       value={playerToAdd}
                       onChange={(event) => setPlayerToAdd(event.target.value)}
                       placeholder="New player"
-                      className="h-11 w-full rounded-lg bg-[var(--dark-900)] px-3 text-base text-[var(--text-100)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/50"
+                      className="input-field"
                     />
                     <button
-                      className="h-11 shrink-0 rounded-md bg-[var(--surface-1)] px-4 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
+                      className="btn h-11 shrink-0 rounded-md bg-[var(--surface-1)] px-4 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
                       onClick={addPlayerToGame}
                     >
                       Add
@@ -532,13 +532,13 @@ export default function Home() {
                           {!activeGame.endedAt && (
                             <div className="flex flex-wrap gap-2">
                               <button
-                                className="rounded-md bg-[var(--surface-1)] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
+                                className="btn rounded-md bg-[var(--surface-1)] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
                                 onClick={() => startEditRound(round)}
                               >
                                 Edit
                               </button>
                               <button
-                                className="rounded-md  bg-[var(--accent-red)] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-[var(--accent-red-dark)]"
+                                className="btn rounded-md  bg-[var(--accent-red)] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-[var(--accent-red-dark)]"
                                 onClick={() => deleteRound(round.id)}
                               >
                                 Delete
@@ -558,7 +558,7 @@ export default function Home() {
                                   {player.name}
                                 </span>
                                 <div className="flex w-full items-center gap-2">
-                                  <div className="flex h-10 shrink-0 overflow-hidden rounded-lg border border-[var(--dark-700)] bg-[var(--dark-900)]">
+                                  <div className="flex h-11 shrink-0 overflow-hidden rounded-lg border border-[var(--dark-700)] bg-[var(--dark-900)]">
                                     <button
                                       type="button"
                                       aria-pressed={(editSigns[player.id] ?? 1) === 1}
@@ -606,20 +606,20 @@ export default function Home() {
                                       }))
                                     }
                                     placeholder="0"
-                                    className="h-10 min-w-0 w-full rounded-lg  bg-[var(--dark-900)] px-3 text-base text-[var(--text-100)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/50"
+                                    className="input-field min-w-0"
                                   />
                                 </div>
                               </label>
                             ))}
                             <div className="flex flex-wrap gap-2">
                               <button
-                                className="rounded-md  bg-[var(--accent-red)] px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-[var(--accent-red-dark)]"
+                                className="btn rounded-md  bg-[var(--accent-red)] px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-[var(--accent-red-dark)]"
                                 onClick={saveEditRound}
                               >
                                 Save changes
                               </button>
                               <button
-                                className="rounded-md bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
+                                className="btn rounded-md bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
                                 onClick={() => setEditingRoundId(null)}
                               >
                                 Cancel
@@ -700,13 +700,13 @@ export default function Home() {
                           </p>
                           <div className="mt-3 flex items-center gap-2">
                             <button
-                              className="inline-flex w-full items-center justify-center rounded-md bg-[var(--surface-1)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
+                              className="btn inline-flex w-full items-center justify-center rounded-md bg-[var(--surface-1)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
                               onClick={() => setActiveGameId(game.id)}
                             >
                               View game
                             </button>
                             <button
-                              className="inline-flex w-full items-center justify-center rounded-md bg-[var(--surface-2)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-200)] transition hover:bg-[var(--surface-2-hover)] hover:text-[var(--accent-red)]"
+                              className="btn inline-flex w-full items-center justify-center rounded-md bg-[var(--surface-2)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-200)] transition hover:bg-[var(--surface-2-hover)] hover:text-[var(--accent-red)]"
                               onClick={() => deleteGame(game.id)}
                             >
                               Delete
@@ -747,13 +747,13 @@ export default function Home() {
                         </button>
                         <div className="mt-3 flex items-center gap-2">
                           <button
-                            className="inline-flex w-full items-center justify-center rounded-md bg-[var(--surface-1)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
+                            className="btn inline-flex w-full items-center justify-center rounded-md bg-[var(--surface-1)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
                             onClick={() => setActiveGameId(game.id)}
                           >
                             Resume
                           </button>
                           <button
-                            className="inline-flex w-full items-center justify-center rounded-md bg-[var(--surface-2)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-200)] transition hover:bg-[var(--surface-2-hover)] hover:text-[var(--accent-red)]"
+                            className="btn inline-flex w-full items-center justify-center rounded-md bg-[var(--surface-2)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-200)] transition hover:bg-[var(--surface-2-hover)] hover:text-[var(--accent-red)]"
                             onClick={() => deleteGame(game.id)}
                           >
                             Delete

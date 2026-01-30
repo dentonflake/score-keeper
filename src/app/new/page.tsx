@@ -163,8 +163,8 @@ export default function NewGamePage() {
                     playerInputRefs.current[0]?.focus();
                   }
                 }}
-                placeholder="Friday Night Showdown"
-                className="h-11 w-full rounded-lg  bg-[var(--dark-900)] px-3 text-base text-[var(--text-100)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/50"
+                placeholder="Farkle, golf, etc."
+                className="input-field"
               />
             </label>
 
@@ -174,7 +174,7 @@ export default function NewGamePage() {
                 <button
                   type="button"
                   aria-pressed={scoringRule === "high"}
-                  className={`rounded-md px-4 py-2 text-xs font-semibold uppercase tracking-wide transition ${
+                  className={`btn rounded-md px-4 py-2 text-xs font-semibold uppercase tracking-wide transition ${
                     scoringRule === "high"
                       ? "bg-[var(--accent-red)] text-white"
                       : "bg-[var(--surface-1)] text-[var(--text-100)] hover:bg-[var(--surface-1-hover)]"
@@ -186,7 +186,7 @@ export default function NewGamePage() {
                 <button
                   type="button"
                   aria-pressed={scoringRule === "low"}
-                  className={`rounded-md px-4 py-2 text-xs font-semibold uppercase tracking-wide transition ${
+                  className={`btn rounded-md px-4 py-2 text-xs font-semibold uppercase tracking-wide transition ${
                     scoringRule === "low"
                       ? "bg-[var(--accent-red)] text-white"
                       : "bg-[var(--surface-1)] text-[var(--text-100)] hover:bg-[var(--surface-1-hover)]"
@@ -227,11 +227,11 @@ export default function NewGamePage() {
                       }
                     }}
                     placeholder={`Player ${index + 1}`}
-                    className="h-11 w-full rounded-lg  bg-[var(--dark-900)] px-3 text-base text-[var(--text-100)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/50"
+                    className="input-field"
                   />
                   {newPlayers.length > 1 && (
                     <button
-                      className="h-11 px-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-200)]"
+                      className="btn h-11 px-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-200)]"
                       onClick={() => setNewPlayers((prev) => prev.filter((_, i) => i !== index))}
                     >
                       Remove
@@ -240,7 +240,7 @@ export default function NewGamePage() {
                 </div>
               ))}
               <button
-                className="w-fit rounded-md bg-[var(--surface-1)] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
+                className="btn w-fit rounded-md bg-[var(--surface-1)] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
                 onClick={addPlayerField}
               >
                 Add player
@@ -251,7 +251,7 @@ export default function NewGamePage() {
             </div>
 
             <button
-              className="mt-2 w-full rounded-md  bg-[var(--accent-red)] py-3 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-[var(--accent-red-dark)]"
+              className="btn mt-2 w-full rounded-md  bg-[var(--accent-red)] py-3 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-[var(--accent-red-dark)]"
               onClick={createGame}
             >
               Start game

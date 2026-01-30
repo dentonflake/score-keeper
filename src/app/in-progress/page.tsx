@@ -124,13 +124,13 @@ export default function InProgressPage() {
                   </p>
                   <div className="mt-4 flex items-center gap-2">
                     <button
-                      className="inline-flex w-full items-center justify-center rounded-md bg-[var(--surface-1)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
+                      className="btn inline-flex w-full items-center justify-center rounded-md bg-[var(--surface-1)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
                       onClick={() => resumeGame(game.id)}
                     >
                       Resume
                     </button>
                     <button
-                      className="inline-flex w-full items-center justify-center rounded-md bg-[var(--surface-2)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-200)] transition hover:bg-[var(--surface-2-hover)] hover:text-[var(--accent-red)]"
+                      className="btn inline-flex w-full items-center justify-center rounded-md bg-[var(--surface-2)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-200)] transition hover:bg-[var(--surface-2-hover)] hover:text-[var(--accent-red)]"
                       onClick={() => deleteGame(game.id)}
                     >
                       Delete
