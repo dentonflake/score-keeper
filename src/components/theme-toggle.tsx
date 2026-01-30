@@ -10,22 +10,18 @@ const setDocumentTheme = (theme: Theme) => {
   document.documentElement.dataset.theme = theme;
 };
 
-const getPreferredTheme = (): Theme => {
-  if (typeof window === "undefined") return "dark";
-  if (window.matchMedia?.("(prefers-color-scheme: light)").matches) {
-    return "light";
-  }
-  return "dark";
-};
-
 export default function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
-    const nextTheme = stored === "light" || stored === "dark" ? stored : getPreferredTheme();
+    const nextTheme = stored === "light" || stored === "dark" ? stored : "dark";
     setTheme(nextTheme);
     setDocumentTheme(nextTheme);
+    if (stored !== "light" && stored !== "dark") {
+      localStorage.setItem(STORAGE_KEY, nextTheme);
+    }
   }, []);
 
   const toggleTheme = () => {
