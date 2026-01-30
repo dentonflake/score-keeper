@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import ThemeToggle from "@/components/theme-toggle";
 
 type Player = {
   id: string;
@@ -82,27 +83,30 @@ export default function InProgressPage() {
 
   return (
     <div className="min-h-screen">
-      <header className="shadow-[0_1px_0_0_rgba(255,255,255,0.06)] bg-[var(--dark-900)]/80 backdrop-blur">
+      <header className="bg-[var(--dark-900)]/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-6 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-red)]">
               Score Keeper
             </p>
-            <h1 className="text-3xl font-semibold tracking-tight text-white">In Progress</h1>
+            <h1 className="text-3xl font-semibold tracking-tight text-[var(--text-100)]">
+              In Progress
+            </h1>
           </div>
           <div className="flex flex-wrap gap-3">
             <Link
               href="/"
-              className="rounded-md bg-white/10 px-4 py-2 text-sm font-semibold uppercase tracking-wide text-white shadow-md shadow-black/40 transition hover:bg-white/15"
+              className="rounded-md bg-[var(--surface-1)] px-4 py-2 text-sm font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
             >
               Home
             </Link>
+            <ThemeToggle />
           </div>
         </div>
       </header>
 
       <main className="mx-auto w-full max-w-6xl px-6 py-10">
-        <div className="rounded-xl  bg-[var(--dark-800)]/90 p-6 shadow-2xl shadow-black/50">
+        <div className="rounded-xl  bg-[var(--dark-800)]/90 p-6">
           {inProgressGames.length === 0 ? (
             <p className="text-sm text-[var(--text-200)]">No active games yet.</p>
           ) : (
@@ -110,21 +114,23 @@ export default function InProgressPage() {
               {inProgressGames.map((game) => (
                 <div
                   key={game.id}
-                  className="rounded-lg  bg-[var(--dark-900)]/80 px-4 py-4 text-sm shadow-md shadow-black/30"
+                  className="rounded-lg  bg-[var(--dark-900)]/80 px-4 py-4 text-sm"
                 >
-                  <p className="font-semibold uppercase tracking-wide text-white">{game.name}</p>
+                  <p className="font-semibold uppercase tracking-wide text-[var(--text-100)]">
+                    {game.name}
+                  </p>
                   <p className="mt-1 text-xs text-[var(--text-200)]">
                     Started {formatDate(game.createdAt)}
                   </p>
                   <div className="mt-4 flex items-center gap-2">
                     <button
-                      className="inline-flex w-full items-center justify-center rounded-md bg-white/10 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-white shadow-md shadow-black/40 transition hover:bg-white/20"
+                      className="inline-flex w-full items-center justify-center rounded-md bg-[var(--surface-1)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
                       onClick={() => resumeGame(game.id)}
                     >
                       Resume
                     </button>
                     <button
-                      className="inline-flex w-full items-center justify-center rounded-md bg-white/5 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-200)] shadow-md shadow-black/30 transition hover:bg-white/10 hover:text-[var(--accent-red)]"
+                      className="inline-flex w-full items-center justify-center rounded-md bg-[var(--surface-2)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-200)] transition hover:bg-[var(--surface-2-hover)] hover:text-[var(--accent-red)]"
                       onClick={() => deleteGame(game.id)}
                     >
                       Delete

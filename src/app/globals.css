@@ -8,6 +8,28 @@
   --text-200: #c8c8d2;
   --accent-red: #e34234;
   --accent-red-dark: #c4362b;
+  --bg-dot-strong: rgba(255, 255, 255, 0.04);
+  --bg-dot-soft: rgba(255, 255, 255, 0.03);
+  --surface-1: rgba(255, 255, 255, 0.1);
+  --surface-1-hover: rgba(255, 255, 255, 0.16);
+  --surface-2: rgba(255, 255, 255, 0.06);
+  --surface-2-hover: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="light"] {
+  --dark-900: #f6f3ee;
+  --dark-800: #efe9e1;
+  --dark-700: #e4dcd0;
+  --text-100: #1b1a18;
+  --text-200: #5b5449;
+  --accent-red: #c83b2c;
+  --accent-red-dark: #a82f23;
+  --bg-dot-strong: rgba(42, 34, 24, 0.08);
+  --bg-dot-soft: rgba(42, 34, 24, 0.05);
+  --surface-1: rgba(27, 26, 24, 0.1);
+  --surface-1-hover: rgba(27, 26, 24, 0.16);
+  --surface-2: rgba(27, 26, 24, 0.06);
+  --surface-2-hover: rgba(27, 26, 24, 0.12);
 }
 
 @theme inline {
@@ -21,8 +43,4 @@ body {
   background: var(--dark-900);
   color: var(--text-100);
   font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, sans-serif;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-position: 0 0, 18px 18px;
-  background-size: 36px 36px;
 }
