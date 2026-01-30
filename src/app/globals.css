@@ -170,3 +170,9 @@ body {
     animation: none;
   }
 }
+
+@media (max-width: 768px) {
+  .input-field {
+    font-size: 1rem;
+  }
+}
