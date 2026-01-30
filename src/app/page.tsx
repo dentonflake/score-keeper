@@ -242,7 +242,7 @@ export default function Home() {
     setEditEntries({});
   };
 
-  const resetActive = () => {
+  const goHome = () => {
     setActiveGameId(null);
   };
 
@@ -256,40 +256,24 @@ export default function Home() {
 
   const completedGames = games.filter((game) => game.endedAt);
   const inProgressGames = games.filter((game) => !game.endedAt);
-  const recentCompleted = completedGames.slice(0, 3);
-  const recentInProgress = inProgressGames.slice(0, 3);
+  const recentCompleted = completedGames.slice(0, 2);
+  const recentInProgress = inProgressGames.slice(0, 2);
 
   return (
     <div className="min-h-screen">
       <header className="bg-[var(--dark-900)]/80 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-6 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-red)]">
-              Score Keeper
-            </p>
-            <h1 className="text-3xl font-semibold tracking-tight text-[var(--text-100)]">
-              Score Keeper
-            </h1>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            {activeGame && (
-              <button
-                className="rounded-md bg-[var(--surface-1)] px-4 py-2 text-sm font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
-                onClick={resetActive}
-              >
-                Home
-              </button>
-            )}
-            {activeGame && !activeGame.endedAt && (
-              <button
-                className="rounded-md bg-[var(--surface-1)] px-4 py-2 text-sm font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
-                onClick={endGame}
-              >
-                End Game
-              </button>
-            )}
-            <ThemeToggle />
-          </div>
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-6">
+          <Link href="/" className="group" onClick={goHome}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-red)] transition group-hover:text-[var(--accent-red-dark)]">
+                Score Keeper
+              </p>
+              <h1 className="text-3xl font-semibold tracking-tight text-[var(--text-100)] transition group-hover:text-[var(--accent-red-dark)]">
+                Score Keeper
+              </h1>
+            </div>
+          </Link>
+          <ThemeToggle />
         </div>
       </header>
 
@@ -348,8 +332,18 @@ export default function Home() {
                       </p>
                     )}
                   </div>
-                  <div className="rounded-md  bg-[var(--dark-900)] px-4 py-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)]">
-                    {activeGame.rounds.length} rounds
+                  <div className="flex w-full flex-wrap items-center justify-between gap-3 md:w-auto">
+                    <div className="rounded-md  bg-[var(--dark-900)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)]">
+                      {activeGame.rounds.length} rounds
+                    </div>
+                    {!activeGame.endedAt && (
+                      <button
+                        className="rounded-md bg-[var(--accent-red)] px-4 py-3 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-[var(--accent-red-dark)]"
+                        onClick={endGame}
+                      >
+                        End game
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -555,14 +549,12 @@ export default function Home() {
               <div className="rounded-xl  bg-[var(--dark-800)]/90 p-5">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="text-lg font-semibold text-[var(--text-100)]">Win History</h3>
-                  {completedGames.length > 3 && (
-                    <Link
-                      href="/history"
-                      className="text-xs font-semibold uppercase tracking-wide text-[var(--text-200)] transition hover:text-[var(--text-100)]"
-                    >
-                      Full history
-                    </Link>
-                  )}
+                  <Link
+                    href="/history"
+                    className="text-xs font-semibold uppercase tracking-wide text-[var(--text-200)] transition hover:text-[var(--text-100)]"
+                  >
+                    Full list
+                  </Link>
                 </div>
                 {completedGames.length === 0 ? (
                   <p className="mt-3 text-sm text-[var(--text-200)]">
@@ -611,14 +603,12 @@ export default function Home() {
               <div className="rounded-xl  bg-[var(--dark-800)]/90 p-5">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="text-lg font-semibold text-[var(--text-100)]">In Progress</h3>
-                  {inProgressGames.length > 3 && (
-                    <Link
-                      href="/in-progress"
-                      className="text-xs font-semibold uppercase tracking-wide text-[var(--text-200)] transition hover:text-[var(--text-100)]"
-                    >
-                      Full list
-                    </Link>
-                  )}
+                  <Link
+                    href="/in-progress"
+                    className="text-xs font-semibold uppercase tracking-wide text-[var(--text-200)] transition hover:text-[var(--text-100)]"
+                  >
+                    Full list
+                  </Link>
                 </div>
                 {inProgressGames.length === 0 ? (
                   <p className="mt-3 text-sm text-[var(--text-200)]">No active games yet.</p>

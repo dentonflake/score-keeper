@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ThemeToggle from "@/components/theme-toggle";
@@ -45,8 +45,10 @@ export default function NewGamePage() {
   const [games, setGames] = useState<Game[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [newGameName, setNewGameName] = useState("");
-  const [newPlayers, setNewPlayers] = useState<string[]>(["", ""]);
+  const [newPlayers, setNewPlayers] = useState<string[]>([""]);
   const [newGameError, setNewGameError] = useState("");
+  const playerInputRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const prevPlayerCount = useRef(newPlayers.length);
 
   useEffect(() => {
     try {
@@ -65,6 +67,20 @@ export default function NewGamePage() {
     if (!isLoaded) return;
     localStorage.setItem(GAMES_KEY, JSON.stringify(games));
   }, [games, isLoaded]);
+
+  useEffect(() => {
+    if (newPlayers.length > prevPlayerCount.current) {
+      const nextIndex = newPlayers.length - 1;
+      requestAnimationFrame(() => {
+        playerInputRefs.current[nextIndex]?.focus();
+      });
+    }
+    prevPlayerCount.current = newPlayers.length;
+  }, [newPlayers.length]);
+
+  const addPlayerField = () => {
+    setNewPlayers((prev) => [...prev, ""]);
+  };
 
   const createGame = () => {
     const trimmedNames = newPlayers
@@ -107,24 +123,22 @@ export default function NewGamePage() {
   return (
     <div className="min-h-screen">
       <header className="bg-[var(--dark-900)]/80 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-6 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-red)]">
-              Score Keeper
-            </p>
-            <h1 className="text-3xl font-semibold tracking-tight text-[var(--text-100)]">
-              New Game
-            </h1>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/"
-              className="rounded-md bg-[var(--surface-1)] px-4 py-2 text-sm font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
-            >
-              Home
-            </Link>
-            <ThemeToggle />
-          </div>
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-6">
+          <Link
+            href="/"
+            className="group"
+            onClick={() => localStorage.removeItem(ACTIVE_GAME_KEY)}
+          >
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-red)] transition group-hover:text-[var(--accent-red-dark)]">
+                Score Keeper
+              </p>
+              <h1 className="text-3xl font-semibold tracking-tight text-[var(--text-100)] transition group-hover:text-[var(--accent-red-dark)]">
+                New Game
+              </h1>
+            </div>
+          </Link>
+          <ThemeToggle />
         </div>
       </header>
 
@@ -140,6 +154,12 @@ export default function NewGamePage() {
               <input
                 value={newGameName}
                 onChange={(event) => setNewGameName(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    playerInputRefs.current[0]?.focus();
+                  }
+                }}
                 placeholder="Friday Night Showdown"
                 className="h-11 w-full rounded-lg  bg-[var(--dark-900)] px-3 text-base text-[var(--text-100)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/50"
               />
@@ -150,6 +170,9 @@ export default function NewGamePage() {
               {newPlayers.map((player, index) => (
                 <div key={`player-${index}`} className="flex gap-2">
                   <input
+                    ref={(element) => {
+                      playerInputRefs.current[index] = element;
+                    }}
                     value={player}
                     onChange={(event) =>
                       setNewPlayers((prev) =>
@@ -158,6 +181,14 @@ export default function NewGamePage() {
                         )
                       )
                     }
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        event.preventDefault();
+                        if (index === newPlayers.length - 1) {
+                          addPlayerField();
+                        }
+                      }
+                    }}
                     placeholder={`Player ${index + 1}`}
                     className="h-11 w-full rounded-lg  bg-[var(--dark-900)] px-3 text-base text-[var(--text-100)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/50"
                   />
@@ -173,7 +204,7 @@ export default function NewGamePage() {
               ))}
               <button
                 className="w-fit rounded-md bg-[var(--surface-1)] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
-                onClick={() => setNewPlayers((prev) => [...prev, ""])}
+                onClick={addPlayerField}
               >
                 Add player
               </button>

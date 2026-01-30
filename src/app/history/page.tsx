@@ -99,24 +99,22 @@ export default function HistoryPage() {
   return (
     <div className="min-h-screen">
       <header className="bg-[var(--dark-900)]/80 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-6 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-red)]">
-              Score Keeper
-            </p>
-            <h1 className="text-3xl font-semibold tracking-tight text-[var(--text-100)]">
-              Win History
-            </h1>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/"
-              className="rounded-md bg-[var(--surface-1)] px-4 py-2 text-sm font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
-            >
-              Home
-            </Link>
-            <ThemeToggle />
-          </div>
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-6">
+          <Link
+            href="/"
+            className="group"
+            onClick={() => localStorage.removeItem(ACTIVE_GAME_KEY)}
+          >
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-red)] transition group-hover:text-[var(--accent-red-dark)]">
+                Score Keeper
+              </p>
+              <h1 className="text-3xl font-semibold tracking-tight text-[var(--text-100)] transition group-hover:text-[var(--accent-red-dark)]">
+                Win History
+              </h1>
+            </div>
+          </Link>
+          <ThemeToggle />
         </div>
       </header>
 
