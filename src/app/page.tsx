@@ -131,7 +131,7 @@ export default function Home() {
   };
 
   const addPlayerToGame = () => {
-    if (!activeGame) return;
+    if (!activeGame || activeGame.endedAt) return;
     const trimmed = playerToAdd.trim();
     if (!trimmed) return;
     if (activeGame.players.some((player) => player.name.toLowerCase() === trimmed.toLowerCase())) {
@@ -147,7 +147,7 @@ export default function Home() {
   };
 
   const addRound = () => {
-    if (!activeGame) return;
+    if (!activeGame || activeGame.endedAt) return;
     const entries = activeGame.players
       .map((player) => ({
         playerId: player.id,
@@ -182,7 +182,7 @@ export default function Home() {
   };
 
   const startEditRound = (round: Round) => {
-    if (!activeGame) return;
+    if (!activeGame || activeGame.endedAt) return;
     const next: Record<string, string> = {};
     activeGame.players.forEach((player) => {
       const entry = round.entries.find((item) => item.playerId === player.id);
@@ -193,7 +193,7 @@ export default function Home() {
   };
 
   const saveEditRound = () => {
-    if (!activeGame || !editingRoundId) return;
+    if (!activeGame || activeGame.endedAt || !editingRoundId) return;
     const updatedEntries = activeGame.players
       .map((player) => ({
         playerId: player.id,
@@ -213,7 +213,7 @@ export default function Home() {
   };
 
   const deleteRound = (roundId: string) => {
-    if (!activeGame) return;
+    if (!activeGame || activeGame.endedAt) return;
     updateGame(activeGame.id, (game) => ({
       ...game,
       rounds: game.rounds.filter((round) => round.id !== roundId),
@@ -237,6 +237,8 @@ export default function Home() {
       ...game,
       endedAt: new Date().toISOString(),
     }));
+    setEditingRoundId(null);
+    setEditEntries({});
   };
 
   const resetActive = () => {
@@ -453,23 +455,25 @@ export default function Home() {
                               {formatDate(round.createdAt)}
                             </p>
                           </div>
-                          <div className="flex flex-wrap gap-2">
-                            <button
-                              className="rounded-md bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-md shadow-black/40 transition hover:bg-white/20"
-                              onClick={() => startEditRound(round)}
-                            >
-                              Edit
-                            </button>
-                            <button
-                              className="rounded-md  bg-[var(--accent-red)] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-[var(--accent-red-dark)]"
-                              onClick={() => deleteRound(round.id)}
-                            >
-                              Delete
-                            </button>
-                          </div>
+                          {!activeGame.endedAt && (
+                            <div className="flex flex-wrap gap-2">
+                              <button
+                                className="rounded-md bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-md shadow-black/40 transition hover:bg-white/20"
+                                onClick={() => startEditRound(round)}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                className="rounded-md  bg-[var(--accent-red)] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-[var(--accent-red-dark)]"
+                                onClick={() => deleteRound(round.id)}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
                         </div>
 
-                        {editingRoundId === round.id ? (
+                        {editingRoundId === round.id && !activeGame.endedAt ? (
                           <div className="mt-4 grid gap-3">
                             {activeGame.players.map((player) => (
                               <label key={player.id} className="flex items-center gap-3">
