@@ -126,6 +126,15 @@ export default function Home() {
 
   const totals = useMemo(() => getTotals(activeGame), [activeGame]);
 
+  const sortedPlayers = useMemo(() => {
+    if (!activeGame) return [];
+    return [...activeGame.players].sort((a, b) => {
+      const aTotal = totals[a.id] ?? 0;
+      const bTotal = totals[b.id] ?? 0;
+      return activeGame.scoring === "low" ? aTotal - bTotal : bTotal - aTotal;
+    });
+  }, [activeGame, totals]);
+
   useEffect(() => {
     if (!activeGame) {
       setRoundDeltas({});
@@ -274,6 +283,24 @@ export default function Home() {
     setEditSigns({});
   };
 
+  const playAgain = () => {
+    if (!activeGame) return;
+    const newGame: Game = {
+      id: makeId(),
+      name: activeGame.name,
+      createdAt: new Date().toISOString(),
+      endedAt: null,
+      scoring: activeGame.scoring,
+      players: activeGame.players.map((player) => ({
+        id: makeId(),
+        name: player.name,
+      })),
+      rounds: [],
+    };
+    setGames((prev) => [...prev, newGame]);
+    setActiveGameId(newGame.id);
+  };
+
   const goHome = () => {
     setActiveGameId(null);
   };
@@ -380,7 +407,7 @@ export default function Home() {
                 </div>
 
                 <div className="mt-6 grid gap-4 md:grid-cols-2">
-                  {activeGame.players.map((player, index) => (
+                  {sortedPlayers.map((player, index) => (
                     <div
                       key={player.id}
                       className="flex items-center justify-between rounded-lg card-inset bg-[var(--dark-900)]/90 px-4 py-3 text-sm font-semibold animate-fade-up"
@@ -397,12 +424,20 @@ export default function Home() {
                 </div>
 
                 {activeGame.endedAt && (
-                  <div className="mt-6 rounded-lg card-inset bg-[var(--accent-red)] px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white animate-fade-up">
-                    Winner{getWinners(activeGame).length > 1 ? "s" : ""}: {" "}
-                    {getWinners(activeGame)
-                      .map((player) => player.name)
-                      .join(", ")}
-                  </div>
+                  <>
+                    <div className="mt-6 rounded-lg card-inset bg-[var(--accent-red)] px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white animate-fade-up">
+                      Winner{getWinners(activeGame).length > 1 ? "s" : ""}: {" "}
+                      {getWinners(activeGame)
+                        .map((player) => player.name)
+                        .join(", ")}
+                    </div>
+                    <button
+                      className="btn mt-3 w-full rounded-md bg-[var(--surface-1)] px-4 py-3 text-sm font-semibold uppercase tracking-wide text-[var(--text-100)] transition hover:bg-[var(--surface-1-hover)]"
+                      onClick={playAgain}
+                    >
+                      Play again
+                    </button>
+                  </>
                 )}
               </div>
 
